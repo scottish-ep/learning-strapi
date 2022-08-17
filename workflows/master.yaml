@@ -1,0 +1,24 @@
+name: Deploy Flambe Strapi (master)
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    env:
+      FLAMBE_ENV_STAG: ${{ secrets.FLAMBE_ENV_STAG }}
+    runs-on: [self-hosted, master]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Inject env
+        run: echo "$FLAMBE_ENV_STAG" > .env
+        shell: bash
+      - name: Run build
+        run: docker-compose build
+
+      - name: Run up
+        run: docker-compose up -d
